@@ -1,0 +1,29 @@
+version: "3"
+services:
+  collab:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    volumes:
+      - ".:/collab"
+    networks:
+      - default
+      - localmongo
+      - verloop-dev
+    external_links:
+      - localmongo1:mongo1
+      - localmongo2:mongo2
+      - localmongo3:mongo3
+    env_file:
+      - .env
+    container_name: collab
+    labels:
+      - "traefik.http.routers.collab.rule=Host(`api.collab.verloop.test`)"
+      - traefik.enable=true
+      - traefik.docker.network=verloop-dev
+networks:
+  localmongo:
+    external:
+      name: localmongo_default
+  verloop-dev:
+    external: true
